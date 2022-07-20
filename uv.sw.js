@@ -51,6 +51,11 @@ class UVServiceWorker extends EventEmitter {
             this.headers.forward.push('content-type');
         };
     };
+    block(list = [], page = '') {
+      return this.on('request', function (event) {
+          if (list.includes((event.data.url).hostname)) return event.respondWith(new Response(page, {status: 400}));
+      });
+    };
     async fetch({ request }) {
         if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
             return fetch(request);
